@@ -95,6 +95,8 @@ module.exports = function(grunt) {
 
     grunt.registerMultiTask('weblint', 'Simple web languages linter',
         function() {
+        var success = true;
+
         this.files.forEach(function(f) {
             var src = f.src.map(function(filepath) {
                 var data = fs.readFileSync(filepath, {"encoding": "utf-8"});
@@ -104,7 +106,10 @@ module.exports = function(grunt) {
                 var allErrors = anyErrors.concat(cssErrors);
 
                 if (allErrors.length > 0) {
+                    success = false;
+
                     grunt.log.writeln((filepath + ":").bold);
+
                     for (var i = 0; i < allErrors.length; i++) {
                         var error = allErrors[i];
                         grunt.log.error("[" + error.line + "] " +
@@ -113,5 +118,7 @@ module.exports = function(grunt) {
                 }
             });
         });
+
+        return success;
     });
 };
