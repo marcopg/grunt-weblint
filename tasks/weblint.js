@@ -12,23 +12,26 @@ var fs = require('fs');
 var RegExpLexer = require("jison-lex");
 
 module.exports = function(grunt) {
-    function logError(lineNumber, message) {
-        grunt.log.error("[" + lineNumber + "] " + message);
-    }
 
     function lintAny(data) {
+        var errors = [];
         var lineNumber = 1;
+
         data.split("\n").forEach(function(line) {
             if (line.length > 80) {
-                logError(lineNumber, "Line too long");
+                errors.push({"line": lineNumber,
+                             "message": "Line too long"});
             }
 
             if (/[ \t]+$/.test(line)) {
-                logError(lineNumber, "Trailing whitespace");
+                errors.push({"line": lineNumber,
+                             "message": "Trailing whitespace"});
             }
 
             lineNumber++;
         });
+
+        return errors;
     }
 
     function lintCss(data) {
@@ -45,14 +48,23 @@ module.exports = function(grunt) {
             ]
         };
 
+        var errors = [];
         var indentLevel = 0;
         var indentCurrent = 0;
         var line = 1;
         var token;
 
         var lexer = new RegExpLexer(dict, data);
-        while (token = lexer.lex(), token !== "EOF") {
-            switch(token) {
+        while (token !== "EOF") {
+            try {
+                token = lexer.lex();
+            } catch (e) {
+                errors.push({"line": line,
+                             "message": e.message});
+                break;
+            }
+
+            switch (token) {
                 case "open":
                     indentLevel++;
                     break;
@@ -67,7 +79,8 @@ module.exports = function(grunt) {
                     break;
                 case "rule":
                     if (indentLevel !== indentCurrent) {
-                        logError(line, "Unexpected indentation");
+                        errors.push({"line": line,
+                                     "message": "Unexpected indentation"});
                     }
                     break;
             }
@@ -76,6 +89,8 @@ module.exports = function(grunt) {
                 indentCurrent = 0;
             }
         }
+
+        return errors;
     }
 
     grunt.registerMultiTask('weblint', 'Simple web languages linter',
@@ -84,8 +99,18 @@ module.exports = function(grunt) {
             var src = f.src.map(function(filepath) {
                 var data = fs.readFileSync(filepath, {"encoding": "utf-8"});
 
-                lintAny(data);
-                lintCss(data);
+                var anyErrors = lintAny(data);
+                var cssErrors = lintCss(data);
+                var allErrors = anyErrors.concat(cssErrors);
+
+                if (allErrors.length > 0) {
+                    grunt.log.writeln((filepath + ":").bold);
+                    for (var i = 0; i < allErrors.length; i++) {
+                        var error = allErrors[i];
+                        grunt.log.error("[" + error.line + "] " +
+                                        error.message);
+                    }
+                }
             });
         });
     });
