@@ -41,13 +41,13 @@ module.exports = function(grunt) {
         var dict = {
             rules: [
                 ["$", "return 'EOF';" ],
-                ["[^{]*{", "return 'open';" ],
-                [".*}", "return 'close';" ],
                 ["\/.*", "return 'comment';" ],
                 ["@import.*", "return 'import';" ],
                 ["\\n", "return 'newline';"],
                 ["\\s{4}", "return 'indent';" ],
-                ["[^\\s][^;]*;", "return 'rule';" ]
+                ["[^\\s][^;{}]*;", "return 'rule';" ],
+                ["[^{}]*{", "return 'open';" ],
+                [".*}", "return 'close';" ]
             ]
         };
 
