@@ -18,9 +18,12 @@ module.exports = function(grunt) {
         var lineNumber = 1;
 
         data.split("\n").forEach(function(line) {
-            if (line.length > 80) {
-                errors.push({"line": lineNumber,
-                             "message": "Line too long"});
+            // Ignore lines containing urls. less 1.3 cannot split them
+            if (line.indexOf("://") < 0) {
+                if (line.length > 80) {
+                    errors.push({"line": lineNumber,
+                                 "message": "Line too long"});
+                }
             }
 
             if (/[ \t]+$/.test(line)) {
@@ -38,7 +41,7 @@ module.exports = function(grunt) {
         var dict = {
             rules: [
                 ["$", "return 'EOF';" ],
-                [".*{", "return 'open';" ],
+                ["[^{]*{", "return 'open';" ],
                 [".*}", "return 'close';" ],
                 ["\/.*", "return 'comment';" ],
                 ["@import.*", "return 'import';" ],
