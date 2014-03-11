@@ -45,7 +45,7 @@ module.exports = function(grunt) {
                 ["@import.*", "return 'import';" ],
                 ["\\n", "return 'newline';"],
                 ["\\s{4}", "return 'indent';" ],
-                ["[^\\s][^;{}]*;", "return 'rule';" ],
+                ["[^\\s{}][^;{}]*;", "return 'rule';" ],
                 ["[^{}]*{", "return 'open';" ],
                 [".*}", "return 'close';" ]
             ]
