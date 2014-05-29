@@ -32,6 +32,11 @@ module.exports = function(grunt) {
                              "message": "Trailing whitespace"});
             }
 
+            if (/\t/.test(line)) {
+                errors.push({"line": lineNumber,
+                             "message": "Tab character"}); 
+            }
+
             lineNumber++;
         });
 

@@ -6,7 +6,7 @@ module.exports = function(grunt) {
         weblint: {
             1: { src: ['fixtures/2.css'] },
             2: { src: ['fixtures/3.css'] },
-            3: { src: ['fixtures/1.css'] }
+            3: { src: ['fixtures/1.html'] }
         }
     });
 

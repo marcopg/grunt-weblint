@@ -22,7 +22,6 @@ module.exports = function(grunt) {
         },
         run_grunt: {
             options: {
-                log: false,
                 expectFail: true
             },
             valid: {
@@ -32,15 +31,15 @@ module.exports = function(grunt) {
                 src: ['test/Gruntfile-valid.js']
             },
             invalid1: {
-                tasks: ['weblint:1'],
+                options: { task: ['weblint:1'] },
                 src: ['test/Gruntfile-invalid.js']
             },
             invalid2: {
-                tasks: ['weblint:2'],
+                options: { task: ['weblint:2'] },
                 src: ['test/Gruntfile-invalid.js']
             },
             invalid3: {
-                tasks: ['weblint:3'],
+                options: { task: ['weblint:3'] },
                 src: ['test/Gruntfile-invalid.js']
             }
         }
