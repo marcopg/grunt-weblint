@@ -102,6 +102,8 @@ module.exports = function(grunt) {
 
         this.files.forEach(function(f) {
             var src = f.src.map(function(filepath) {
+                grunt.log.writeln('Linting ' + filepath);
+
                 var data = fs.readFileSync(filepath, {"encoding": "utf-8"});
 
                 var anyErrors = lintAny(data);

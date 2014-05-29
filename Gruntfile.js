@@ -20,17 +20,24 @@ module.exports = function(grunt) {
                 jshintrc: '.jshintrc',
             },
         },
-
-        weblint: {
-            files: {
-                src: ['test/fixtures/1.css']
+        run_grunt: {
+            valid: {
+                src: ['test/Gruntfile-succeed.js']
+            },
+            invalid: {
+                options: {
+                    expectFail: true
+                },
+                src: ['test/Gruntfile-fail.js']
             }
         }
     });
 
     grunt.loadTasks('tasks');
-    grunt.loadNpmTasks('grunt-contrib-jshint');
 
-    grunt.registerTask('test', ['weblint']);
+    grunt.loadNpmTasks('grunt-contrib-jshint');
+    grunt.loadNpmTasks('grunt-run-grunt');
+
+    grunt.registerTask('test', ['run_grunt']);
     grunt.registerTask('default', ['jshint', 'test']);
 };

@@ -31,7 +31,8 @@
   },
   "devDependencies": {
     "grunt": "~0.4.3",
-    "grunt-contrib-jshint": "~0.6.0"
+    "grunt-contrib-jshint": "~0.6.0",
+    "grunt-run-grunt": "~0.1.4"
   },
   "peerDependencies": {
     "grunt": "~0.4.3"
