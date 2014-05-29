@@ -13,7 +13,9 @@ module.exports = function(grunt) {
     grunt.initConfig({
         weblint: {
             valid: {
-                src: ['fixtures/2.css']
+                src: ['fixtures/2.css',
+                      'fixtures/3.css',
+                      'fixtures/1.js']
             }
         }
     });

@@ -9,18 +9,19 @@
 'use strict';
 
 var fs = require('fs');
+var path = require('path');
 var RegExpLexer = require("jison-lex");
 
 module.exports = function(grunt) {
 
-    function lintAny(data) {
+    function lintAny(data, options) {
         var errors = [];
         var lineNumber = 1;
 
         data.split("\n").forEach(function(line) {
             // Ignore lines containing urls. less 1.3 cannot split them
-            if (line.indexOf("://") < 0) {
-                if (line.length > 80) {
+            if (options.lineLength && line.indexOf("://") < 0) {
+                if (line.length > options.lineLength) {
                     errors.push({"line": lineNumber,
                                  "message": "Line too long"});
                 }
@@ -102,13 +103,18 @@ module.exports = function(grunt) {
 
         this.files.forEach(function(f) {
             var src = f.src.map(function(filepath) {
-                grunt.log.writeln('Linting ' + filepath);
-
+                var extName = path.extname(filepath);
                 var data = fs.readFileSync(filepath, {"encoding": "utf-8"});
 
-                var anyErrors = lintAny(data);
-                var cssErrors = lintCss(data);
-                var allErrors = anyErrors.concat(cssErrors);
+                var options = {};
+                var allErrors = [];
+
+                if (extName === ".css" || extName === ".less") {
+                    allErrors = lintCss(data);
+                    options.lineLength = 80;
+                }
+
+                allErrors = allErrors.concat(lintAny(data, options));
 
                 if (allErrors.length > 0) {
                     success = false;
